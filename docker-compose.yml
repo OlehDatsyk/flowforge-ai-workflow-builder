@@ -1,0 +1,44 @@
+# Production-style stack: API, separate worker, PostgreSQL.
+#   1. Create .env.production from .env.example with APP_ENV=production, COOKIE_SECURE=true,
+#      DEMO_MODE_ENABLED=false, PUBLIC_BASE_URL and a generated CREDENTIALS_ENCRYPTION_KEY.
+#   2. Set POSTGRES_PASSWORD in your shell.
+#   3. docker compose up --build
+# Put an HTTPS reverse proxy in front of port 8000, because COOKIE_SECURE requires HTTPS.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: flowforge
+      POSTGRES_USER: flowforge
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flowforge"]
+      interval: 5s
+      retries: 20
+
+  api:
+    build: .
+    env_file: .env.production
+    environment:
+      DATABASE_URL: postgresql+psycopg://flowforge:${POSTGRES_PASSWORD}@db:5432/flowforge
+      WORKER_ENABLED: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  worker:
+    build: .
+    command: ["python", "-m", "app.worker"]
+    env_file: .env.production
+    environment:
+      DATABASE_URL: postgresql+psycopg://flowforge:${POSTGRES_PASSWORD}@db:5432/flowforge
+    depends_on:
+      api:
+        condition: service_started
+
+volumes:
+  pgdata:

@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  background: #080d18;
+  color: #f1f5f9;
+  font-family: "Inter Variable", system-ui, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv11", "ss03";
+}
+:focus-visible {
+  outline: 2px solid #818cf8;
+  outline-offset: 1px;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2b3a50 transparent;
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@layer components {
+  .field {
+    @apply w-full rounded-md border border-line bg-base/70 px-2.5 py-1.5 text-[13px] text-ink placeholder:text-faint transition-colors hover:border-lineStrong focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/60 disabled:opacity-50;
+  }
+  .field-mono {
+    @apply field font-mono text-xs;
+  }
+  .card {
+    @apply rounded-lg border border-line bg-surface;
+  }
+  .label {
+    @apply mb-1 block text-xs font-medium text-muted;
+  }
+  .th {
+    @apply whitespace-nowrap px-3 py-2 text-left text-2xs font-semibold uppercase tracking-wide text-faint;
+  }
+  .td {
+    @apply px-3 py-2.5 align-middle;
+  }
+}
+
+/* React Flow theme */
+.react-flow {
+  --xy-background-color: #0c1422;
+  --xy-edge-stroke-default: #46587a;
+  --xy-edge-stroke-width-default: 1.6;
+  --xy-edge-stroke-selected-default: #818cf8;
+  --xy-connectionline-stroke-default: #818cf8;
+  --xy-connectionline-stroke-width-default: 1.6;
+  --xy-selection-background-color-default: rgba(99, 102, 241, 0.1);
+  --xy-selection-border-default: 1px dashed #6366f1;
+  --xy-attribution-background-color-default: transparent;
+}
+.react-flow__handle {
+  width: 11px;
+  height: 11px;
+  background: #162235;
+  border: 2px solid #5b6f8f;
+  transition: border-color 0.12s, background 0.12s, transform 0.12s;
+}
+.react-flow__handle:hover,
+.react-flow__handle.connectingto {
+  border-color: #818cf8;
+  background: #6366f1;
+}
+.react-flow__handle.connectingfrom {
+  border-color: #818cf8;
+}
+.react-flow__minimap {
+  background: #0b1220;
+  border: 1px solid #263449;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.react-flow__attribution {
+  opacity: 0.35;
+  background: transparent !important;
+}
+.react-flow__attribution a {
+  color: #94a3b8;
+}
+.edge-running path.react-flow__edge-path {
+  stroke-dasharray: 6;
+  animation: dashdraw 0.5s linear infinite;
+}
+@keyframes dashdraw {
+  from {
+    stroke-dashoffset: 12;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  .edge-running path.react-flow__edge-path {
+    animation: none !important;
+    transition: none !important;
+  }
+}
